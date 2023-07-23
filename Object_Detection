@@ -1,0 +1,48 @@
+It is the main model file/code  which contain details and code in
+This code is a Python script that uses OpenCV's Deep Neural Network (DNN) module to perform real-time object detection using the YOLOv3 (You Only Look Once version 3) model. YOLOv3 is a popular object detection algorithm that can detect multiple objects in an image or video stream.
+
+Here's an explanation of the code:
+
+Import necessary libraries:
+
+cv2: The OpenCV library used for computer vision tasks.
+time: For tracking the elapsed time.
+numpy: For numerical operations.
+Load YOLOv3 model and its configuration:
+net=cv2.dnn.readNet('yolov3.weights', 'yolov3.cfg'): This line loads the YOLOv3 model with pre-trained weights and configuration.
+Load class names:
+
+with open("coco.names", "r") as f:: This line opens the file "coco.names" containing class names.
+classes = [line.strip() for line in f.readlines()]: The class names are read from the file and stored in the classes list.
+Get layer names and output layers:
+
+layer_names = net.getLayerNames(): This line gets the names of all the layers in the neural network.
+output_layers = [layer_names[i-1] for i in net.getUnconnectedOutLayers()]: This line gets the names of the output layers from the YOLOv3 model.
+Set up colors for drawing bounding boxes:
+
+colors = np.random.uniform(0, 255, size=(len(classes), 3)): Random colors are generated for each class to draw bounding boxes with different colors.
+Capture video from the webcam:
+
+cap = cv2.VideoCapture(0): The code initializes the webcam (ID 0) for capturing video.
+Main loop for real-time object detection:
+
+The loop reads frames from the webcam video stream and performs object detection on each frame.
+Object detection:
+
+blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False): This creates a blob (binary large object) from the frame, which is used as input to the neural network for object detection.
+net.setInput(blob): The blob is set as the input to the YOLOv3 network.
+outs = net.forward(output_layers): The forward pass is performed, and the output layers are obtained.
+Post-processing and visualization:
+
+The code iterates through each detected object and retrieves its class label, confidence score, and bounding box coordinates.
+Non-maximum suppression (NMS) is applied to remove overlapping bounding boxes and retain only the most confident ones.
+Bounding boxes and class labels are drawn on the frame.
+The frames per second (FPS) are calculated and displayed on the frame.
+Exiting the loop:
+
+The loop continues until the user presses the 'Esc' key.
+When the 'Esc' key is pressed, the loop breaks, and the webcam stream is released.
+Cleanup:
+cap.release(): Releases the webcam capture.
+cv2.destroyAllWindows(): Closes all OpenCV windows.
+Overall, this code creates a real-time object detection application using YOLOv3 and OpenCV, which can detect multiple objects from the webcam video stream and draw bounding boxes around them with corresponding class labels and confidence scores.
